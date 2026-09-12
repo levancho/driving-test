@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+const events={},memory=new Map(),surface={innerHTML:'',querySelector:()=>({focus(){}})};
+globalThis.document={querySelector:s=>s==='#app'?surface:s==='.brand'?{addEventListener(){}}:null,addEventListener:(name,fn)=>{events[name]=fn;}};
+globalThis.window={scrollTo(){},addEventListener(){},confirm:()=>true,alert:m=>{throw Error(m)}};
+globalThis.localStorage={getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)};
+Object.defineProperty(globalThis,'navigator',{value:{onLine:true},configurable:true});
+globalThis.setInterval=()=>0;
+await import('../dist/app.js');
+const click=dataset=>events.click({target:{closest:()=>({dataset})}});
+const state=()=>JSON.parse(memory.get('nj-road-ready-v1'));
+test('Visible app completes practice, saves answers, shows explanations and records history',async()=>{assert.match(surface.innerHTML,/84 original questions/);await click({start:'quick'});assert.match(surface.innerHTML,/QUESTION 1 OF 10/);for(let i=0;i<10;i++){await click({answer:'0'});await click({action:'confirm'});assert.match(surface.innerHTML,/Correct — nicely done/);await click({action:'next'});}assert.match(surface.innerHTML,/SESSION COMPLETE/);assert.equal(state().stats.answers,10);assert.equal(state().stats.history.length,1);assert.equal(state().stats.history[0].correct,10);await click({view:'progress'});assert.match(surface.innerHTML,/100%/);});
+test('Mock mode hides feedback until completion and does not double-count confirmations',async()=>{await click({start:'exam'});await click({answer:'1'});await click({action:'confirm'});await click({action:'confirm'});assert.doesNotMatch(surface.innerHTML,/Not quite|Correct — nicely done/);assert.equal(state().stats.answers,10);assert.equal(state().session.items.length,50);await click({view:'home'});assert.match(surface.innerHTML,/unfinished mock test/);await click({action:'resume'});assert.match(surface.innerHTML,/QUESTION 1 OF 50/);});
