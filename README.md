@@ -2,6 +2,8 @@
 
 A mobile-first, installable web app for practicing the New Jersey basic automobile knowledge test. No native mobile build, accounts, server database, paid APIs, or build dependencies are required.
 
+Production domain: https://dmv.l3v.ai. Deployment uses Cloudflare Workers Static Assets, configured in `wrangler.jsonc`. Run `wrangler deploy` with a signed-in account that can deploy Workers and attach the custom domain. The GitHub repository is source storage; automatic deployment on push is not configured.
+
 ## Features
 
 - Ten-question mixed practice with instant explanations.
