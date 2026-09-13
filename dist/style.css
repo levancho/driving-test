@@ -10,3 +10,4 @@
 .l3v-link:hover{background:#e5ffa0}.l3v-link:focus-visible{outline:3px solid white;outline-offset:4px}
 @media(max-width:600px){.l3v-info{align-items:flex-start;flex-direction:column;gap:16px}.l3v-link{max-width:100%;flex-shrink:1}}
 .l3v-links{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-start}
+.coffee-support{margin:20px 0}.coffee-support a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 18px;border:1px solid #c8d3df;border-radius:12px;background:#fff;color:#102a43;font-size:1rem;font-weight:600;text-decoration:none}.coffee-support a:hover{background:#edf4dc}.coffee-support a:focus-visible{outline:3px solid #102a43;outline-offset:4px}
