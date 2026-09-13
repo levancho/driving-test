@@ -1,5 +1,8 @@
 import {kaQuestions} from './questions-ka.js';
 export const translations={
+ 'Made by l3v':'შექმნილია l3v-ის მიერ',
+ 'Explore l3v tools for names, signatures, and video ideas.':'აღმოაჩინეთ l3v-ის ხელსაწყოები სახელების დიზაინისთვის, ხელმოწერებისა და ვიდეოიდეებისთვის.',
+ 'Try l3v tools':'სცადეთ l3v-ის ხელსაწყოები',
  'Choose your state':'აირჩიეთ შტატი',
  'New Jersey':'ნიუ-ჯერსი',
  'New York':'ნიუ-იორკი',
