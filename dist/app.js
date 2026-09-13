@@ -1,3 +1,4 @@
+import {track,initAnalytics,toggleAnalytics,analyticsOptedOut} from './analytics.js';
 import {states,createSession,score,recordAnswer,blankStats,validSession} from './engine.js';
 import {translate,localizedQuestion} from './i18n.js';
 const app=document.querySelector('#app'), LANGUAGE_KEY='nj-road-ready-language', STATE_KEY='road-ready-state';
@@ -6,7 +7,7 @@ function loadState(next){
  state=next;config=states[state];questions=config.questions;topics=config.topics;stats=blankStats();session=null;manual=null;
  try{const old=JSON.parse(localStorage.getItem(config.storageKey)||'null');if(old?.stats&&Array.isArray(old.stats.missed)&&Array.isArray(old.stats.seen)&&Array.isArray(old.stats.history)&&old.stats.topics){stats={...blankStats(),...old.stats};stats.missed=stats.missed.filter(id=>questions.some(q=>q.id===id));if(validSession(old.session)&&(old.session.state??'nj')===state)session=old.session;}}catch{storageOK=false;}
 }
-function setState(next){if(!Object.hasOwn(states,next)||next===state)return;save();loadState(next);try{localStorage.setItem(STATE_KEY,state);}catch{storageOK=false;}go('home');}
+function setState(next){if(!Object.hasOwn(states,next)||next===state)return;save();loadState(next);try{localStorage.setItem(STATE_KEY,state);}catch{storageOK=false;}go('home');track('state_change',{state,language});}
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let stats=blankStats(),session=null,view='home',storageOK=true,offlineReady=false,deferredInstall=null,manual=null,language='en',timerMinutes=0;
 try{
@@ -22,7 +23,7 @@ function go(next){view=next;render();window.scrollTo({top:0,behavior:'instant'})
 function setLanguage(next){
  if(!['en','ka'].includes(next))return;
  timerMinutes=Number(document.querySelector('#duration')?.value||timerMinutes);
- language=next;try{localStorage.setItem(LANGUAGE_KEY,language);}catch{storageOK=false;}
+ language=next;track('language_change',{state,language});try{localStorage.setItem(LANGUAGE_KEY,language);}catch{storageOK=false;}
  render();
 }
 function statePicker(){return `<div class="state-picker" role="group" aria-label="${t('Choose your state')}">${Object.entries(states).map(([id,c])=>`<button data-state="${id}" aria-pressed="${state===id}" class="${state===id?'primary':'secondary'}">${id.toUpperCase()} · ${t(c.name)}</button>`).join('')}</div>`;}
@@ -56,12 +57,12 @@ function render(){
  const brandSubtitle=document.querySelector('.brand small');if(brandSubtitle)brandSubtitle.textContent=t('DRIVER PRACTICE');
  const edition=document.querySelector('.edition');if(edition)edition.textContent=t(config.name);
  const brand=document.querySelector('.brand');brand?.setAttribute?.('aria-label',t('Road Ready home'));
- const footer=document.querySelector('footer');if(footer)footer.innerHTML=`<section class="l3v-info" aria-label="l3v"><div><p class="l3v-credit">${t('Developed by l3v')}</p><p>${t('Explore l3v tools for names, signatures, and video ideas.')}</p></div><div class="l3v-links"><a class="l3v-link" href="https://l3v.ai/" target="_blank" rel="noopener noreferrer">l3v.ai <span aria-hidden="true">↗</span></a><a class="l3v-link" href="https://tools.l3v.ai/" target="_blank" rel="noopener noreferrer">tools.l3v.ai <span aria-hidden="true">↗</span></a><a class="l3v-link" href="https://www.youtube.com/@echoramedia" target="_blank" rel="noopener noreferrer">${t('Echora on YouTube')} <span aria-hidden="true">↗</span></a></div></section><p class="coffee-support"><a href="https://ko-fi.com/l3vcoffe" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${t('Like this? Buy me a coffee')}</a></p><p>${t('Independent practice app · Based on the supplied {state} Driver Manual.',{state:t(config.name)})}<br>${t('Not an official exam. Each state’s progress is saved separately on this device.')}</p>`;
+ const footer=document.querySelector('footer');if(footer)footer.innerHTML=`<section class="l3v-info" aria-label="l3v"><div><p class="l3v-credit">${t('Developed by l3v')}</p><p>${t('Explore l3v tools for names, signatures, and video ideas.')}</p></div><div class="l3v-links"><a class="l3v-link" href="https://l3v.ai/" target="_blank" rel="noopener noreferrer">l3v.ai <span aria-hidden="true">↗</span></a><a class="l3v-link" href="https://tools.l3v.ai/" target="_blank" rel="noopener noreferrer">tools.l3v.ai <span aria-hidden="true">↗</span></a><a class="l3v-link" href="https://www.youtube.com/@echoramedia" target="_blank" rel="noopener noreferrer">${t('Echora on YouTube')} <span aria-hidden="true">↗</span></a></div></section><p class="coffee-support"><a href="https://ko-fi.com/l3vcoffe" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${t('Like this? Buy me a coffee')}</a></p><p>${t('Independent practice app · Based on the supplied {state} Driver Manual.',{state:t(config.name)})}<br>${t('Not an official exam. Each state’s progress is saved separately on this device.')}</p><p class="source">${language==='ka'?'ანონიმური სტატისტიკა გვეხმარება აპის გაუმჯობესებაში. პასუხები არ იგზავნება.':'Anonymous usage analytics help improve this app. Your answers are not sent.'} <button class="quiet" data-action="analytics">${language==='ka'?(analyticsOptedOut()?'ანალიტიკის ჩართვა':'ანალიტიკის გამორთვა'):(analyticsOptedOut()?'Enable analytics':'Disable analytics')}</button></p>`;
  app.innerHTML=statePicker()+(view==='quiz'?quiz():view==='progress'?progressView():view==='guide'?guide():home())+(!storageOK?`<p class="notice" role="status">${t('Your browser is not allowing saved progress. You can still practice, but progress may disappear when you close this page.')}</p>`:'');
 }
-function start(mode,topic='',minutes=0){if(session&&!session.finished&&!window.confirm(t('Start a new session? This replaces your unfinished session; previously checked answers stay in your progress.')))return false;try{session=createSession(mode,topic,stats.missed,minutes,state);save();go('quiz');return true;}catch(e){window.alert(t(e.message));return false;}}
+function start(mode,topic='',minutes=0){if(session&&!session.finished&&!window.confirm(t('Start a new session? This replaces your unfinished session; previously checked answers stay in your progress.')))return false;try{session=createSession(mode,topic,stats.missed,minutes,state);track('test_start',{state,language,mode,topic});save();go('quiz');return true;}catch(e){window.alert(t(e.message));return false;}}
 function confirm(){const it=session?.items[session.index];if(!it||it.confirmed||it.selected===null)return;it.confirmed=true;if(session.mode!=='exam')recordAnswer(stats,questions.find(q=>q.id===it.id),it.selected);save();render();app.querySelector('[data-action="next"]')?.focus({preventScroll:true});}
-function finish(timedOut=false){if(session.finished)return;session.finished=true;session.timedOut=timedOut;if(session.mode==='exam')for(const it of session.items){const q=questions.find(q=>q.id===it.id);if(it.confirmed)recordAnswer(stats,q,it.selected);else stats.missed=[...new Set([...stats.missed,q.id])];}const s=score(session);stats.history.push({...s,date:Date.now(),label:session.mode==='exam'?'Mock test':session.topic||'Mixed practice',timedOut});stats.history=stats.history.slice(-100);save();go('quiz');}
+function finish(timedOut=false){if(session.finished)return;session.finished=true;track('test_complete',{state,language,mode:session.mode,topic:session.topic});session.timedOut=timedOut;if(session.mode==='exam')for(const it of session.items){const q=questions.find(q=>q.id===it.id);if(it.confirmed)recordAnswer(stats,q,it.selected);else stats.missed=[...new Set([...stats.missed,q.id])];}const s=score(session);stats.history.push({...s,date:Date.now(),label:session.mode==='exam'?'Mock test':session.topic||'Mixed practice',timedOut});stats.history=stats.history.slice(-100);save();go('quiz');}
 function timeText(){if(!session)return '';const sec=Math.max(0,Math.floor(((session.deadline??Date.now())-(session.deadline?Date.now():session.started))/1000));return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}${t(session.deadline?' left':' elapsed')}`;}
 setInterval(()=>{if(session&&!session.finished){if(session.deadline&&Date.now()>=session.deadline){finish(true);return;}const el=document.querySelector('#timer');if(el)el.textContent=timeText();}},1000);
 let sourceDialog=null;
@@ -76,7 +77,10 @@ async function showPage(page){
  }catch{dialog.innerHTML=`<p>${t('The manual text could not load. Reconnect and reopen this page to save it for offline use.')}</p>${button('Close','data-close')}`;}
 }
 document.addEventListener('click',async e=>{
+ const link=e.target.closest('a[href]');
+ if(link?.href){const targets={'https://ko-fi.com/l3vcoffe':'coffee','https://l3v.ai/':'l3v','https://tools.l3v.ai/':'tools','https://www.youtube.com/@echoramedia':'echora'};if(targets[link.href])track('link_click',{state,language,target:targets[link.href]});}
  const b=e.target.closest('button');if(!b||b.disabled)return;
+ if(b.dataset.action==='analytics'){toggleAnalytics();return;}
  if(b.dataset.state)setState(b.dataset.state);
  else if(b.dataset.action==='language')setLanguage(language==='ka'?'en':'ka');
  else if(b.dataset.view)go(b.dataset.view);
@@ -97,3 +101,4 @@ if('serviceWorker' in navigator){
 }
 const mc=document.modelContext;if(mc?.registerTool){const lifecycle=new AbortController();window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});for(const tool of [{name:'get_practice_progress',description:'Read device-local driver practice progress.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>({answers:stats.answers,correct:stats.correct,missed:stats.missed.length,completed:stats.history.length,language,state})},{name:'start_quick_practice',description:'Start a ten-question practice session if no unfinished session exists.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:false},execute:input=>{if(!input||Object.keys(input).length)throw Error('Expected an empty object');if(session&&!session.finished)throw Error('An unfinished session already exists');start('quick');return {started:true,questions:session.items.length};}}]){try{Promise.resolve(mc.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{});}catch{}}}
 render();
+initAnalytics({state,language});
