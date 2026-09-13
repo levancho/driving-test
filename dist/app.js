@@ -51,7 +51,7 @@ function results(){const s=score(session);return `<section class="quiz">${button
 function render(){
  const coffeeLabel=document.querySelector('#coffee-top-label');if(coffeeLabel)coffeeLabel.textContent=t('Like this? Buy me a coffee');
  document.documentElement.lang=language;document.title=t('Road Ready — {state} driver practice',{state:t(config.name)});
- const badge=document.querySelector('.badge');if(badge)badge.textContent=state.toUpperCase();
+ const badge=document.querySelector('.badge');if(badge)badge.textContent='US';
  const languageButton=document.querySelector('#language-toggle');if(languageButton){languageButton.textContent=language==='ka'?'English':'ქართული';languageButton.lang=language==='ka'?'en':'ka';languageButton.setAttribute('aria-label',language==='ka'?'Switch to English':'ქართულ ენაზე გადართვა');}
  const brandSubtitle=document.querySelector('.brand small');if(brandSubtitle)brandSubtitle.textContent=t('DRIVER PRACTICE');
  const edition=document.querySelector('.edition');if(edition)edition.textContent=t(config.name);
