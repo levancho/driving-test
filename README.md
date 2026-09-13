@@ -6,6 +6,8 @@ Production domain: https://dmv.l3v.ai. Deployment uses Cloudflare Workers Static
 
 ## Features
 
+- English / ქართული language toggle with all 84 questions, choices, explanations, menus and progress labels translated. The saved language is device-local and switching never changes the current question, option order, score or timer. Georgian is an independent study translation; the supplied manual text and road-sign artwork remain in their original English, and US units are retained.
+
 - Ten-question mixed practice with instant explanations.
 - Fifty-question mock tests; 40 correct passes the practice target. Optional 30/50-minute challenge timers are app settings, not official exam time limits.
 - Topic practice, road-sign images extracted from the supplied manual, and missed-question review.
