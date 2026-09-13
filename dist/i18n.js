@@ -1,5 +1,6 @@
 import {kaQuestions} from './questions-ka.js';
 export const translations={
+ 'Echora on YouTube':'Echora YouTube-ზე',
  'Developed by l3v':'შემუშავებულია l3v-ის მიერ',
  'Explore l3v tools for names, signatures, and video ideas.':'აღმოაჩინეთ l3v-ის ხელსაწყოები სახელების დიზაინისთვის, ხელმოწერებისა და ვიდეოიდეებისთვის.',
  'Try l3v tools':'სცადეთ l3v-ის ხელსაწყოები',
