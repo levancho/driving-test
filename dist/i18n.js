@@ -1,5 +1,28 @@
 import {kaQuestions} from './questions-ka.js';
 export const translations={
+ 'Choose your state':'აირჩიეთ შტატი',
+ 'New Jersey':'ნიუ-ჯერსი',
+ 'New York':'ნიუ-იორკი',
+ 'Unknown state':'უცნობი შტატი',
+ 'Also: at least 2 of 4 road signs correct.':'ასევე: ნიშნების 4 კითხვიდან მინიმუმ 2 სწორი პასუხი.',
+ '{total} questions. Answers revealed at the end. Pass with {percent}%.':'{total} კითხვა. პასუხები ბოლოს გამოჩნდება. ჩასაბარებლად საჭიროა {percent}%.',
+ '{state}: {total} questions, {pass} correct to pass':'{state}: {total} კითხვა, ჩასაბარებლად {pass} სწორი პასუხი',
+ 'YOUR STATE MANUAL':'თქვენი შტატის სახელმძღვანელო',
+ 'Open the official manual PDF online':'გახსენით ოფიციალური სახელმძღვანელოს PDF ონლაინ',
+ 'Practice passing target: {pass} of {total}':'სავარჯიშო ტესტის ჩაბარების ზღვარი: {pass} / {total}',
+ 'Road signs: {correct} of {total} correct (at least 2 required)':'საგზაო ნიშნები: {correct} / {total} სწორი (საჭიროა მინიმუმ 2)',
+ 'Road Ready — {state} driver practice':'Road Ready — {state}: მართვის სავარჯიშო',
+ 'Road Ready home':'Road Ready-ის მთავარი გვერდი',
+ 'Independent practice app · Based on the supplied {state} Driver Manual.':'დამოუკიდებელი სასწავლო აპი · საფუძველი: მოწოდებული სახელმძღვანელო — {state}.',
+ 'Not an official exam. Each state’s progress is saved separately on this device.':'არ არის ოფიციალური გამოცდა. თითოეული შტატის პროგრესი ამ მოწყობილობაზე ცალ-ცალკე ინახება.',
+ '{state} Driver Manual · Original English text. Diagrams and layout are in the original PDF.':'{state}: მძღოლის სახელმძღვანელო · ორიგინალი ინგლისური ტექსტი. დიაგრამები და განლაგება თავდაპირველ PDF-შია.',
+ 'Georgian is a study translation, not an official DMV or MVC translation. Original road-sign lettering and US measurement units are preserved.':'ქართული ტექსტი სასწავლო თარგმანია და არა DMV-ის ან MVC-ის ოფიციალური თარგმანი. საგზაო ნიშნების წარწერები და აშშ-ის საზომი ერთეულები უცვლელია. mph ნიშნავს მილს საათში.',
+ 'Traffic control':'მოძრაობის რეგულირება',
+ 'Intersections & turns':'გზაჯვარედინები და მოხვევები',
+ 'Passing & school buses':'გასწრება და სკოლის ავტობუსები',
+ 'Special driving conditions':'მართვის განსაკუთრებული პირობები',
+ 'Traffic crashes':'საგზაო შემთხვევები',
+ 'Driver assistance systems':'მძღოლის დამხმარე სისტემები',
  'Main':'მთავარი მენიუ',
  'Practice':'ვარჯიში',
  'My progress':'ჩემი პროგრესი',
@@ -146,4 +169,4 @@ export const translations={
  'Georgian is a study translation, not an official MVC translation. Original road-sign lettering and US measurement units are preserved.':'ქართული ტექსტი სასწავლო თარგმანია და არა MVC-ის ოფიციალური თარგმანი. ნიშნებზე წარწერები და აშშ-ის საზომი ერთეულები უცვლელია. mph ნიშნავს მილს საათში.'
 };
 export function translate(language,key,values={}){return (language==='ka'?(translations[key]??key):key).replace(/\{(\w+)\}/g,(_,k)=>String(values[k]??`{${k}}`));}
-export function localizedQuestion(q,language){return language==='ka'?{...q,...kaQuestions[q.id]}:q;}
+export function localizedQuestion(q,language){return language==='ka'?{...q,...(q.ka??kaQuestions[q.id])}:q;}

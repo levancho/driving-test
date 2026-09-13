@@ -1,0 +1,6 @@
+import {questions as njQuestions,topics as njTopics} from './questions.js';
+import {nyQuestions} from './questions-ny.js';
+export const states={
+ nj:{name:'New Jersey',questions:njQuestions,topics:njTopics,count:50,pass:40,signs:0,signPass:0,storageKey:'nj-road-ready-v1',manual:'manual-pages.json',pages:241,offset:2,pdf:'https://www.nj.gov/mvc/pdf/license/drivermanual.pdf',testUrl:'https://www.nj.gov/mvc/license/sample_knowledge_test.htm',chapters:[['Licensing & GDL',4],['Driver testing',30],['Seat belts & car seats',40],['Vehicle control & parking',48],['Road rules & speed',62],['School buses & emergency vehicles',76],['Headlights & parking rules',83],['Defensive driving',90],['Alcohol & medication',114],['Sharing the road',144],['Signs & signals',212]]},
+ ny:{name:'New York',questions:nyQuestions,topics:[...new Set(nyQuestions.map(q=>q.topic))],count:20,pass:14,signs:4,signPass:2,storageKey:'ny-road-ready-v1',manual:'manual-pages-ny.json',pages:84,offset:0,pdf:'https://dmv.ny.gov/brochure/MV21.pdf',testUrl:'https://dmv.ny.gov/book/export/html/1551',chapters:[['Traffic control',29],['Intersections & turns',34],['Passing & school buses',39],['Vehicle & parking',42],['Defensive driving',45],['Alcohol & safety',54],['Special driving conditions',59],['Sharing the road',67],['Traffic crashes',76],['Driver assistance systems',77]]}
+};

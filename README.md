@@ -1,12 +1,15 @@
-# NJ Road Ready
+# Road Ready — New Jersey & New York
 
-A mobile-first, installable web app for practicing the New Jersey basic automobile knowledge test. No native mobile build, accounts, server database, paid APIs, or build dependencies are required.
+A mobile-first, installable web app for practicing the New Jersey and New York automobile knowledge tests. No native mobile build, accounts, server database, paid APIs, or build dependencies are required.
 
 Production domain: https://dmv.l3v.ai. Deployment uses Cloudflare Workers Static Assets, configured in `wrangler.jsonc`. Run `wrangler deploy` with a signed-in account that can deploy Workers and attach the custom domain. The GitHub repository is source storage; automatic deployment on push is not configured.
 
 ## Features
 
-- English / ქართული language toggle with all 84 questions, choices, explanations, menus and progress labels translated. The saved language is device-local and switching never changes the current question, option order, score or timer. Georgian is an independent study translation; the supplied manual text and road-sign artwork remain in their original English, and US units are retained.
+- NJ / NY switcher with independent progress and resumable sessions. Existing NJ storage is preserved. There are 84 NJ questions and 50 NY questions, all available in English and Georgian.
+- New York mock tests contain 20 questions, exactly four road-sign questions, and require both 14 correct overall and two correct signs. NJ retains its 50-question / 40-correct format. Non-exam practice does not impose the NY sign quota.
+
+- English / ქართული language toggle with questions, choices, explanations, menus and progress labels translated. The saved language is device-local and switching never changes the current question, option order, score or timer. Georgian is an independent study translation; the supplied manual text and road-sign artwork remain in their original English, and US units are retained.
 
 - Ten-question mixed practice with instant explanations.
 - Fifty-question mock tests; 40 correct passes the practice target. Optional 30/50-minute challenge timers are app settings, not official exam time limits.
@@ -22,6 +25,10 @@ Requires Node.js 22 or newer. `npm start` serves the authored static app at http
 Deploy the contents of `dist/` to an HTTPS static host. All asset URLs are relative. HTTPS (or localhost for development) is required for service workers and installation. Private hosting may require an online sign-in before first use. Device installation and offline behavior must be tested in the target phone/browser before making platform guarantees.
 
 ## Source and accuracy
+
+NY source: user-supplied `mv21.pdf`, 84 PDF pages; printed and PDF page numbers match. NY questions are original paraphrases from chapters 4–11, with page references. Extracted text is in `dist/manual-pages-ny.json`; the bilingual bank is `dist/questions-ny.js`. Format verified against https://dmv.ny.gov/book/export/html/1551. The source PDF and online manual may be different editions; the app does not claim a 2026 NY edition or automatically refresh legal rules. NY sign practice currently uses written shape/color/sign scenarios; NJ retains its extracted sign artwork.
+
+`dist/states.js` owns state-specific banks, chapters, source URLs and exam settings. NJ keeps its original `nj-road-ready-v1` storage key; NY uses `ny-road-ready-v1`, with selection in `road-ready-state`. NY tests cover sign-count and scoring boundaries, bilingual coverage, source references, state isolation and session recovery. Offline cache v3 includes both manuals and both banks.
 
 Source: user-provided **2026 New Jersey Driver Manual**, 243 PDF pages. Question references use printed manual page numbers (PDF page = printed page + 2). This repository contains extracted manual text and 20 cropped signs; it does not include the 44 MB original PDF. Question wording is original and is not the official MVC exam. Read the complete manual when preparing.
 
