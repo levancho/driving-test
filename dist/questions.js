@@ -90,3 +90,4 @@ const signs=[
 ];
 signs.forEach((r,i)=>questions.push({id:`s${i+1}`,topic:'Signs & signals',page:r[5],question:'What does this sign mean?',options:r.slice(1,5),answer:0,explanation:`This sign means: ${r[1].toLowerCase()}. Identify the symbol and prepare for the indicated condition.`,image:`./signs/${r[0]}.png`}));
 export const topics=[...new Set(questions.map(q=>q.topic))];
+for(const [id,image] of Object.entries({q61:'hospital.png',q62:'workers.png',q63:'recreation.svg',q64:'flagger.png'})){questions.find(q=>q.id===id).image='./signs/'+image;}
