@@ -1,5 +1,5 @@
-const CACHE='nj-road-ready-v16';
-const CORE=['./','./index.html','./style.css','./style.css?v=16','./app.js','./app.js?v=16','./study.js','./analytics.js','./engine.js','./states.js','./questions-ny.js','./manual-pages-ny.json','./questions.js','./questions-ka.js','./i18n.js','./manual-pages.json','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-us-192.png','./icon-us-512.png'];
+const CACHE='nj-road-ready-v17';
+const CORE=['./','./index.html','./style.css','./style.css?v=17','./app.js','./app.js?v=17','./study.js','./analytics.js','./engine.js','./states.js','./questions-ny.js','./manual-pages-ny.json','./questions.js','./questions-ka.js','./i18n.js','./manual-pages.json','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-us-192.png','./icon-us-512.png'];
 const SIGNS=['two-way','sharp-turn','divided','winding','merge','hill','lane-reduction','crossroad','school','slippery','hospital','yield-ahead','signal-ahead','workers','flagger','no-uturn','bicycles','keep-right','railroad','crossbuck'].map(s=>'./signs/'+s+'.png');
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll([...CORE,...SIGNS])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('nj-road-ready-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
